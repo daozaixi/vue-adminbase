@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import("../view/home/index.vue"),
       meta: { requiresAuth: true },
     },
+    {
+      path: "/layout",
+      name: "Layout",
+      component: () => import("../layout/index.vue"),
+    },
   ],
 });
 

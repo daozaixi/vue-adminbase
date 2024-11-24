@@ -9,13 +9,7 @@ const service = axios.create({
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
-    const res = response.data;
-    if (res.code === 200) {
-      return res;
-    }
-
-    ElMessage.error(res.message || "请求失败");
-    return Promise.reject(res);
+    return response.data; //直接返回数据
   },
   (error) => {
     ElMessage.error(error.message || "网络错误");

@@ -35,7 +35,7 @@
       ElMessage.success("登录成功");
       router.push("/");
     } catch (error) {
-      console.error("登录失败:", error);
+      ElMessage.error("登录失败:", error);
     }
   };
 
@@ -71,7 +71,7 @@
         <el-input
           v-model="loginForm.password"
           :type="passwordVisible ? 'text' : 'password'"
-          placeholder="密码: 123456"
+          placeholder="请输入密码"
           name="password"
           aria-label="password"
         />
@@ -180,7 +180,7 @@
   .login-button {
     width: 100%;
     margin-top: 20px;
-    background: #909399;
+    background: #1eb392;
     border: none;
     padding: 12px;
     height: 45px;
