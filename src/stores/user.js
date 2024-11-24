@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { login } from "@/api/user";
-import { ElMessage } from "element-plus";
 
 export const useUserStore = defineStore("user", () => {
   const token = ref(localStorage.getItem("token") || "");

@@ -1,15 +1,28 @@
 <script setup>
+  import { ref } from "vue";
   import Menu from "./Menu/index.vue";
+  import Header from "./headers/index.vue";
+
+  const isCollapse = ref(false);
+
+  const handleToggleSidebar = () => {
+    isCollapse.value = !isCollapse.value;
+  };
 </script>
 
 <template>
   <div class="common-layout">
     <el-container class="layout-container">
-      <el-aside width="250px" class="layout-aside">
-        <Menu />
+      <el-aside :width="isCollapse ? '64px' : '250px'" class="layout-aside">
+        <Menu :is-collapse="isCollapse" />
       </el-aside>
       <el-container class="layout-right">
-        <el-header class="layout-header">Header</el-header>
+        <el-header class="layout-header">
+          <Header
+            :is-collapse="isCollapse"
+            @toggle-sidebar="handleToggleSidebar"
+          />
+        </el-header>
         <el-main class="layout-main">
           <router-view></router-view>
         </el-main>
@@ -33,6 +46,7 @@
     color: #fff;
     box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
     transition: all 0.3s;
+    overflow: hidden;
   }
 
   .layout-right {

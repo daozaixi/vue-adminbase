@@ -1,34 +1,57 @@
 <script setup>
   import { ref, onMounted } from "vue";
   import { getMenuList } from "@/api/menu";
+  import {
+    User,
+    Lock,
+    List,
+    Grid,
+    ShoppingCart,
+    Tickets,
+    DataLine,
+    Menu as MenuIcon,
+  } from "@element-plus/icons-vue";
+
+  // 创建图标映射对象
+  const iconMap = {
+    users: User,
+    rights: Lock,
+    roles: Lock,
+    goods: ShoppingCart,
+    params: Grid,
+    categories: List,
+    orders: Tickets,
+    reports: DataLine,
+    list: MenuIcon,
+  };
 
   // 定义 menuList ref
   const menuList = ref([]);
 
   const initMenuList = async () => {
     try {
-      console.log("开始获取菜单数据");
       const res = await getMenuList();
-      console.log("获取到的响应:", res);
-
-      if (res && res.code === 200) {
+      if (res?.code === 200) {
         menuList.value = res.data;
-        console.log("设置后的menuList:", menuList.value);
-      } else {
-        console.error("响应格式不正确:", res);
       }
     } catch (error) {
       console.error("获取菜单列表失败:", error);
     }
   };
 
-  onMounted(() => {
-    initMenuList();
+  onMounted(initMenuList);
+
+  const props = defineProps({
+    isCollapse: {
+      type: Boolean,
+      default: false,
+    },
   });
 </script>
 
 <template>
   <el-menu
+    :collapse="isCollapse"
     active-text-color="#ffd04b"
     background-color="#545c64"
     class="el-menu-vertical-demo"
@@ -43,6 +66,9 @@
         :index="'/' + item.path"
       >
         <template #title>
+          <el-icon>
+            <component :is="iconMap[item.path]" />
+          </el-icon>
           <span>{{ item.authName }}</span>
         </template>
         <el-menu-item
@@ -50,11 +76,17 @@
           :key="child.id"
           :index="'/' + child.path"
         >
-          {{ child.authName }}
+          <el-icon>
+            <component :is="iconMap[child.path]" />
+          </el-icon>
+          <span>{{ child.authName }}</span>
         </el-menu-item>
       </el-sub-menu>
 
       <el-menu-item v-else :index="'/' + item.path">
+        <el-icon>
+          <component :is="iconMap[item.path]" />
+        </el-icon>
         <span>{{ item.authName }}</span>
       </el-menu-item>
     </template>
