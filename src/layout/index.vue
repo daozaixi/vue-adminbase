@@ -10,7 +10,9 @@
       </el-aside>
       <el-container class="layout-right">
         <el-header class="layout-header">Header</el-header>
-        <el-main class="layout-main">Main</el-main>
+        <el-main class="layout-main">
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>

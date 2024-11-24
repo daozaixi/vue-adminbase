@@ -32,31 +32,28 @@
     active-text-color="#ffd04b"
     background-color="#545c64"
     class="el-menu-vertical-demo"
-    default-active="2"
+    :default-active="$route.path"
     text-color="#fff"
+    router
   >
-    <!-- 使用v-for渲染菜单数据 -->
     <template v-for="item in menuList" :key="item.id">
-      <!-- 有子菜单的情况 -->
       <el-sub-menu
         v-if="item.children && item.children.length"
-        :index="item.id.toString()"
+        :index="'/' + item.path"
       >
         <template #title>
           <span>{{ item.authName }}</span>
         </template>
-        <!-- 渲染子菜单 -->
         <el-menu-item
           v-for="child in item.children"
           :key="child.id"
-          :index="child.id.toString()"
+          :index="'/' + child.path"
         >
           {{ child.authName }}
         </el-menu-item>
       </el-sub-menu>
 
-      <!-- 没有子菜单的情况 -->
-      <el-menu-item v-else :index="item.id.toString()">
+      <el-menu-item v-else :index="'/' + item.path">
         <span>{{ item.authName }}</span>
       </el-menu-item>
     </template>
