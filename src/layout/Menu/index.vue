@@ -35,6 +35,7 @@
     :default-active="$route.path"
     text-color="#fff"
     router
+    unique-opened
   >
     <template v-for="item in menuList" :key="item.id">
       <el-sub-menu
