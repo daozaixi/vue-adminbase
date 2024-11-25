@@ -1,8 +1,135 @@
 import Mock from "mockjs";
 
+// 设置延迟和响应时间
+Mock.setup({
+  timeout: "200-600",
+});
+
+// 数据存储
+function getLocalUsers() {
+  return JSON.parse(localStorage.getItem("users") || "[]");
+}
+
+function saveUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+// 获取用户列表
+Mock.mock("/api/users", "get", () => {
+  return {
+    code: 200,
+    message: "获取用户列表成功",
+    data: getLocalUsers(),
+  };
+});
+
+// 添加用户
+Mock.mock("/api/users", "post", (options) => {
+  const users = getLocalUsers();
+  const newUser = JSON.parse(options.body);
+
+  newUser.id = users.length ? Math.max(...users.map((u) => u.id)) + 1 : 1;
+  newUser.createTime = new Date().toLocaleDateString();
+
+  users.push(newUser);
+  saveUsers(users);
+
+  return {
+    code: 200,
+    message: "添加用户成功",
+    data: newUser,
+  };
+});
+
+// 更新用户
+Mock.mock(/\/api\/users\/\d+/, "put", (options) => {
+  const users = getLocalUsers();
+  const updatedUser = JSON.parse(options.body);
+  const index = users.findIndex((u) => u.id === updatedUser.id);
+
+  if (index !== -1) {
+    users[index] = updatedUser;
+    saveUsers(users);
+    return {
+      code: 200,
+      message: "更新用户成功",
+      data: updatedUser,
+    };
+  }
+
+  return {
+    code: 404,
+    message: "用户不存在",
+  };
+});
+
+// 删除用户
+Mock.mock(/\/api\/users\/\d+/, "delete", (options) => {
+  const users = getLocalUsers();
+  const id = parseInt(options.url.match(/\/api\/users\/(\d+)/)[1]);
+  const index = users.findIndex((u) => u.id === id);
+
+  if (index !== -1) {
+    users.splice(index, 1);
+    saveUsers(users);
+    return {
+      code: 200,
+      message: "删除用户成功",
+    };
+  }
+
+  return {
+    code: 404,
+    message: "用户不存在",
+  };
+});
+
 // 模拟登录接口
 Mock.mock("/api/login", "post", (options) => {
   const { username, password } = JSON.parse(options.body);
+
+  // 初始化测试用户数据
+  if (!localStorage.getItem("users")) {
+    const initialUsers = [
+      {
+        id: 1,
+        username: "admin",
+        email: "admin@example.com",
+        mobile: "13800138000",
+        role: "admin",
+        status: true,
+        createTime: "2024-03-14",
+      },
+      {
+        id: 2,
+        username: "test",
+        email: "test@example.com",
+        mobile: "13800138001",
+        role: "user",
+        status: true,
+        createTime: "2024-03-19",
+      },
+      {
+        id: 3,
+        username: "user1",
+        email: "user1@example.com",
+        mobile: "13800138002",
+        role: "user",
+        status: false,
+        createTime: "2024-03-25",
+      },
+      {
+        id: 4,
+        username: "manager",
+        email: "manager@example.com",
+        mobile: "13800138003",
+        role: "admin",
+        status: true,
+        createTime: "2024-04-14",
+      },
+    ];
+    localStorage.setItem("users", JSON.stringify(initialUsers));
+  }
 
   if (username === "admin" && password === "123456") {
     return {
